@@ -1,0 +1,12 @@
+body{background:#e8dcc2;color:#2a1f14;font:18px/1.65 "EB Garamond",Georgia,"Iowan Old Style",serif;margin:0}
+main{max-width:720px;margin:0 auto;padding:28px 20px 64px}
+header{border-bottom:1px solid #8f7c5c;margin-bottom:8px;padding-bottom:10px}
+header a{font:400 30px "Pinyon Script","Snell Roundhand",cursive;color:#2a1f14;text-decoration:none}
+nav{float:right;font-size:16px;padding-top:12px}
+nav a{font:inherit;color:#8a2f24;margin-left:14px;text-decoration:underline}
+h1{font-weight:400;font-size:40px;margin:18px 0 4px}
+h2{font-weight:400;font-size:22px;color:#8a2f24;margin:28px 0 6px}
+p,li{margin:8px 0}
+a{color:#8a2f24}
+.m{color:#6a5a44;font-style:italic}
+footer{margin-top:40px;color:#6a5a44;font-size:15px;border-top:1px solid #8f7c5c;padding-top:12px}
