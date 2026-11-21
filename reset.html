@@ -1,0 +1,39 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reset password · Saint Chris</title><meta name="robots" content="noindex"><meta name="description" content="Saint Chris is a travel passport for the places you have really been."><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Pinyon+Script&display=swap"><link rel="stylesheet" href="style.css"></head><body><main><header><nav><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="support.html">Support</a></nav><a href="index.html">Saint Chris</a></header>
+
+<h1>Reset your password</h1>
+<p id="msg" class="m">Checking your reset link…</p>
+<form id="f" hidden style="display:none;max-width:360px">
+<p><label>New password<br><input id="p1" type="password" autocomplete="new-password" minlength="8" required style="width:100%;font:inherit;padding:8px;box-sizing:border-box"></label></p>
+<p><label>Confirm new password<br><input id="p2" type="password" autocomplete="new-password" minlength="8" required style="width:100%;font:inherit;padding:8px;box-sizing:border-box"></label></p>
+<p><button id="go" type="submit" style="font:inherit;padding:8px 18px;background:#8a2f24;color:#efe4c9;border:0;cursor:pointer">Save new password</button></p>
+</form>
+<p class="m" id="note">The link works once and expires after an hour. If it stops working, request a new one from the sign-in screen in the app.</p>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+(function(){
+var URLV="https://whobfvzamjmifkwwkxfz.supabase.co",KEY="sb_publishable_zeEGP3I_l_FPFKAZ11OIvQ_9c2qP2Xj";
+var msg=document.getElementById("msg"),f=document.getElementById("f");
+var hash=location.hash||"",q=new URLSearchParams(hash.replace(/^#/,""));
+var bad=q.get("error_description")||(q.get("error")?"This reset link is invalid or has expired.":"");
+function say(t,err){msg.textContent=t;msg.style.color=err?"#8a2f24":""}
+if(!window.supabase){say("This page could not load. Check your connection and reload.",true);return}
+var sb=window.supabase.createClient(URLV,KEY,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:true}});
+var ready=false;
+function show(){if(ready)return;ready=true;say("Choose a new password for your Saint Chris account.");f.hidden=false;f.style.display="block"}
+if(bad){say("This reset link is invalid or has expired. Request a new one from the sign-in screen in the app.",true);return}
+sb.auth.onAuthStateChange(function(ev){if(ev==="PASSWORD_RECOVERY"||ev==="SIGNED_IN")show()});
+setTimeout(function(){sb.auth.getSession().then(function(r){if(r.data&&r.data.session)show();else if(!ready)say("This reset link is invalid or has expired. Request a new one from the sign-in screen in the app.",true)})},1500);
+f.addEventListener("submit",async function(e){
+  e.preventDefault();var a=document.getElementById("p1").value,b=document.getElementById("p2").value;
+  if(a.length<8){say("Use at least 8 characters.",true);return}
+  if(a!==b){say("The two passwords do not match.",true);return}
+  var go=document.getElementById("go");go.disabled=true;
+  var r=await sb.auth.updateUser({password:a});
+  if(r.error){go.disabled=false;say(r.error.message||"Could not save the new password. Request a new link and try again.",true);return}
+  f.style.display="none";f.hidden=true;document.getElementById("note").textContent="";
+  say("Your password is changed. Return to the Saint Chris app and sign in with your new password.");
+  try{history.replaceState(null,"",location.pathname);await sb.auth.signOut()}catch(_){}
+});
+})();
+</script>
+<footer>Saint Chris · <a href="mailto:help@saintchris.app">help@saintchris.app</a></footer></main></body></html>
